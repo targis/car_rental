@@ -1,0 +1,114 @@
+@font-face {
+  font-family: "icomoon";
+  src: url("fonts/icomoon.eot?e25e0b");
+  src: url("fonts/icomoon.eot?e25e0b#iefix") format("embedded-opentype"),
+    url("fonts/icomoon.ttf?e25e0b") format("truetype"), url("fonts/icomoon.woff?e25e0b") format("woff"),
+    url("fonts/icomoon.svg?e25e0b#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "icomoon" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-edit:before {
+  content: "\e913";
+}
+.icon-bookmarks:before {
+  content: "\e910";
+}
+.icon-bookmark:before {
+  content: "\e911";
+}
+.icon-turned_in:before {
+  content: "\e911";
+}
+.icon-local_offer:before {
+  content: "\e912";
+}
+.icon-camera:before {
+  content: "\e90b";
+}
+.icon-star-outline:before {
+  content: "\e907";
+}
+.icon-star-half:before {
+  content: "\e909";
+}
+.icon-star:before {
+  content: "\e90a";
+}
+.icon-group:before {
+  content: "\e908";
+}
+.icon-people:before {
+  content: "\e908";
+}
+.icon-check:before {
+  content: "\e906";
+}
+.icon-search:before {
+  content: "\e904";
+}
+.icon-arrow-right:before {
+  content: "\e905";
+}
+.icon-twitter:before {
+  content: "\e90c";
+}
+.icon-brand:before {
+  content: "\e90c";
+}
+.icon-tweet:before {
+  content: "\e90c";
+}
+.icon-social:before {
+  content: "\e90c";
+}
+.icon-instagram:before {
+  content: "\e90d";
+}
+.icon-brand1:before {
+  content: "\e90d";
+}
+.icon-social1:before {
+  content: "\e90d";
+}
+.icon-facebook:before {
+  content: "\e90e";
+}
+.icon-brand2:before {
+  content: "\e90e";
+}
+.icon-social2:before {
+  content: "\e90e";
+}
+.icon-badge:before {
+  content: "\e90f";
+}
+.icon-user-circle-o:before {
+  content: "\e901";
+}
+.icon-door:before {
+  content: "\e900";
+}
+.icon-suitcase:before {
+  content: "\e902";
+}
+.icon-canister:before {
+  content: "\e903";
+}

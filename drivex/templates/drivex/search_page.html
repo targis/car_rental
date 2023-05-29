@@ -1,0 +1,26 @@
+{% extends 'drivex/base.html' %}
+{% load static %}
+{% block title %}DriveX - Search{% endblock %}
+{% block main %}
+
+
+
+
+    
+<section class="row mb-5">
+<div class="d-flex justify-content-between mb-3">
+<h3>Search for '{{ search }}'</h3>
+<a href="{% url 'drivex:car-list' %}" class="d-flex flex-column align-items-center h-100 brand-card link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover fs-5">Try Car Filter</a>
+</div>
+     
+  {% for car in cars %}
+
+    {% include 'drivex/parts/car_card.html' with car=car col='col-md-3 col-sm-4' %}
+    
+  {% empty %}
+  <p>Nothing found...</p>
+  {% endfor %}
+    
+</section>
+
+{% endblock %}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %}</title>
+  {% comment %} <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"> {% endcomment %}
+  <link href="{% static 'drivex/css/customized_bootstrap.css' %}" rel="stylesheet">
+  {% block extrastyles %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'drivex/css/style.css' %}">
+</head>
+<body class="body-bg">
+
+<nav class="navbar navbar-expand-lg shadow  bg-white py-3">
+  <div class="container justify-content-between">
+    <div class="d-flex">
+      <a class="navbar-brand me-5" href="{% url 'drivex:home' %}">
+        {% include 'drivex/parts/logo.html' %}
+      </a>
+      {% comment %} <a class="navbar-brand" href="{% url 'drivex:home' %}"></a> {% endcomment %}
+      <div>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      </div>
+      
+      <div class="collapse navbar-collapse fs-5 flex-grow-0" id="navbarSupportedContent">
+        {% with request.resolver_match.url_name as url_name %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item me-2">
+            <a
+              class="nav-link {% if url_name == 'home' %}active{% endif %}"
+              href="{% url 'drivex:home' %}"
+              >Home</a
+            >
+          </li>
+          <li class="nav-item me-2">
+            <a
+              class="nav-link {% if url_name == 'car-list' %}active{% endif %}"
+              href="{% url 'drivex:car-list' %}"
+              >Cars</a
+            >
+          </li>
+          <li class="nav-item me-2">
+            <a
+              class="nav-link {% if url_name == 'brands' %}active{% endif %}"
+              href="{% url 'drivex:brand-list' %}"
+              >Brands</a
+            >
+          </li>
+        </ul>
+        {% endwith %}
+      </div>
+    </div>
+    <form class="d-flex me-5" role="search" action="{% url 'drivex:search' %}" method="POST">
+      {% csrf_token %}
+      <div class="input-group">
+        <select name="search-category" class="form-select" id="CategorySelect" style="max-width: 90px">
+          <option value="1" selected>All</option>
+          <option value="2">Cars</option>
+          <option value="3">Brands</option>
+        </select>
+        <input name="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+      </div>
+    </form>
+
+    <div class="user">
+      <div class="d-inline-flex align-items-center">
+        {% if user.is_authenticated %} 
+        {% if user.profile.photo %}
+          <div class="overflow-hidden rounded-circle me-2" style="width: 30px; height: 30px">
+            <img class="object-fit-cover" src="{{ user.profile.photo.url }}" width="100%" height="100%" />
+          </div>
+        {% endif %}
+
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ user }}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'drivex:user-profile' %}">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'drivex:order-list' %}">Orders</a></li>
+            <li><a class="dropdown-item" href="{% url 'drivex:profile-favorites' %}">Favorites</a></li>
+            <li><a class="dropdown-item" href="{% url 'drivex:profile-reviews' %}">Reviews</a></li>
+            <li><a class="dropdown-item" href="{% url 'drivex:user-logout' %}?next={{ request.path }}">Logout</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      {% else %}
+      <a class="link-secondary" href="{% url 'drivex:user-login' %}?next={{ request.path }}">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<div class="container content my-5">
+  {% block main %}{% endblock %}
+</div>
+
+<footer class="footer bg-white shadow mt-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+      <div class="mt-5">
+        {% include 'drivex/parts/logo.html' %}
+      </div>
+
+      <ul class="mt-3 navbar-nav d-flex flex-row gap-4 justify-content-center">
+        <li class="nav-item"><a href="{% url 'drivex:home' %}" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="{% url 'drivex:car-list' %}" class="nav-link">Cars</a></li>
+        <li class="nav-item"><a href="{% url 'drivex:brand-list' %}" class="nav-link">Brands</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Terms & Conditions</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+      </ul>
+
+      
+      {% comment %} <p class="menu">
+        <a href="{% url 'drivex:home' %}">Home</a>
+        <a href="{% url 'drivex:car-list' %}">Cars</a>
+        <a href="{% url 'drivex:brand-list' %}">Brands</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Contact</a>
+      </p> {% endcomment %}
+      <ul class="mt-3 social navbar-nav d-flex flex-row justify-content-center gap-4">
+        <li class="nav-item"><a class="d-flex justify-content-center align-items-center rounded-circle border border-primary text-decoration-none" href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Twitter"><i class="icon-twitter"></i></a></li>
+        <li class="nav-item"><a class="d-flex justify-content-center align-items-center rounded-circle border border-primary text-decoration-none" href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Facebook"><i class="icon-facebook"></i></a></li>
+        <li class="nav-item"><a class="d-flex justify-content-center align-items-center rounded-circle border border-primary text-decoration-none" href="#" data-toggle="tooltip" data-placement="top" title="" data-original-title="Instagram"><i class="icon-instagram"></i></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-md-12 text-center text-secondary">
+      <p class="copyright">
+        Copyright © Drivex 2023 All rights reserved 
+      </p>
+    </div>
+  </div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+{% block extrajs %}{% endblock %}
+</body>
+</html>

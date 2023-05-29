@@ -1,0 +1,21 @@
+{% extends 'drivex/base.html' %}
+{% load static %}
+{% block title %}DriveX - Brands{% endblock %}
+{% block main %}
+
+<div class="row">
+  {% for brand in brands %}
+    <div class="col-md-4 mb-3">
+      <a class="card text-decoration-none h-100" href="{% url 'drivex:brand-detail' pk=brand.id %}">
+        <div class="card-body text-center">
+          <h3 class="">{{ brand }}</h3>
+          <img class="object-fit-contain" src="{{ brand.logo.url }}" alt="{{ brand }}" height="160"> 
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+{% include 'drivex/parts/pagination.html' %}
+
+{% endblock %}

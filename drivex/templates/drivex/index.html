@@ -1,0 +1,105 @@
+{% extends 'drivex/base.html' %}
+{% load static %}
+{% block title %}DriveX - Car rental{% endblock %}
+{% block main %}
+
+{% block extrastyles %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+{% endblock %}
+
+<section class="">
+<div class="d-flex justify-content-between mb-3">
+  <h3>Brands</h3>
+  <a href="{% url 'drivex:brand-list' %}" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover fs-5">All brands</a>
+</div>
+<div class="bg-light position-relative border rounded py-2 px-5 mb-5">
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      {% for brand in brands %} 
+        <div class="swiper-slide">
+          <a class="d-flex flex-column align-items-center h-100 brand-card link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{% url 'drivex:brand-detail' pk=brand.id %}">
+            <img src="{{ brand.logo.url }}" class="card-img-top object-fit-contain mb-3" alt="{{ brand }}" height=50>
+            <h4 class="fs-6">{{ brand.name }} ({{ brand.count }})</h4>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>  
+</div>
+</section>
+
+
+    
+<section class="row mb-5">
+<div class="d-flex justify-content-between mb-3">
+<h3>Best Offers</h3>
+<a href="{% url 'drivex:car-list' %}" class="d-flex flex-column align-items-center h-100 brand-card link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover fs-5">All cars</a>
+</div>
+  
+  {% for car in cars %}
+
+    {% include 'drivex/parts/car_card.html' with car=car col='col-md-3 col-sm-4' %}
+    
+  {% endfor %}
+    
+</section>
+
+
+{% if top_cars %}
+<section class="row mb-5">
+<div class="d-flex justify-content-between mb-3">
+<h3>Top Rated Cars</h3>
+<a href="{% url 'drivex:car-list' %}" class="d-flex flex-column align-items-center h-100 brand-card link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover fs-5">All cars</a>
+</div>
+  
+  {% for tc in top_cars %}
+
+    {% include 'drivex/parts/car_card.html' with car=tc col='col-md-3 col-sm-4' %}
+    
+  {% endfor %}
+    
+</section>
+{% endif %}
+
+{% if user.is_authenticated and favorite_cars %}
+
+<section class="row mb-5">
+<div class="d-flex justify-content-between mb-3">
+<h3>Your Favorite Cars</h3>
+<a href="{% url 'drivex:profile-favorites' %}" class="d-flex flex-column align-items-center h-100 brand-card link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover fs-5">All favorites</a>
+</div>
+  
+  {% for fc in favorite_cars %}
+
+    {% include 'drivex/parts/car_card.html' with car=fc col='col-md-3 col-sm-4' %}
+    
+  {% endfor %}
+    
+</section>
+
+{% endif %}
+
+
+
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const swiper = new Swiper('.swiper', {
+    slidesPerView: 5,
+    loop: true,
+    navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+    injectStyles: ['']
+  },
+  });
+})
+
+</script>
+{% endblock %}

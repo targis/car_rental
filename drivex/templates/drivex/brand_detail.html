@@ -1,0 +1,26 @@
+{% extends 'drivex/base.html' %}
+{% load static %}
+{% block title %}DriveX - {{ brand }}{% endblock %}
+{% block main %}
+
+<div class="row">
+  <aside class="col-md-3">
+    <h3 class="mb-3">Rent {{ brand }} car</h3>
+    <img class="w-75" src="{{ brand.logo.url }}" alt="">
+  </aside>
+
+  <section class="col-md-9">
+
+  <div class="row">
+    
+    {% for car in cars %}     
+            
+    {% include 'drivex/parts/car_card.html' with car=car col='col-md-4 col-sm-6' %}
+
+    {% endfor %}
+
+  </div>
+  </section>
+</div>
+
+{% endblock %}

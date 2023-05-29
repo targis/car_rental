@@ -1,0 +1,26 @@
+{% extends 'drivex/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block main %}
+{% include 'drivex/parts/messages.html' %}
+
+<h3 class="mb-5">{% block profile_title %}{% endblock %}</h3>
+
+<div class="row">
+
+  <div class="col-md-2">
+    {% include 'drivex/parts/profile_sidebar.html' %}
+  </div>
+  {% with request.resolver_match.url_name as url_name %}
+  <div class="{% if url_name == 'user-profile' %}col-md-6{% else %} col-md-9{% endif %} mx-auto bg-white rounded p-4">
+    {% block content %}
+
+    {% endblock %}
+  </div>
+  {% endwith %}
+</div>
+
+{% endblock %}
+  
+
+

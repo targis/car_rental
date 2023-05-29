@@ -1,0 +1,36 @@
+{% extends 'drivex/profile_base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block profile_title %}<span class="text-warning">{{user}}'s</span> profile{% endblock %}
+
+{% block content %}
+
+  {% if user.profile.photo %}
+  <div id="user-picture" class="position-relative overflow-hidden rounded-circle border border-light mb-3" style="width: 100px; height: 100px">
+      <img class="object-fit-cover" src="{{ user.profile.photo.url }}" width="100%" height="100%" />
+      <input name="photo" type="file" />
+      <div class="picture-cover d-flex w-100 h-100 justify-content-center align-items-center">
+        <i class="icon-camera text-white fs-2"></i>
+      </div>
+  </div>
+  
+  {% endif %}
+
+  <form class="profile-form" method="post" action="{% url 'drivex:user-profile' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ profile_form|crispy }}
+    <button class="btn btn-primary mt-3" type="submit">Save changes</button>
+  </form>
+
+{% endblock %}
+  
+{% block extrajs %}
+  <script defer>
+    var userpic = document.getElementById('user-picture')
+    var userpicInput = document.getElementById('id_photo')
+    userpic.addEventListener('click', function(e) {
+      userpicInput.click()
+    })
+  </script>
+{% endblock %}

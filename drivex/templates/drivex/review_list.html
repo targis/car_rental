@@ -1,0 +1,32 @@
+{% extends 'drivex/profile_base.html' %}
+{% load static %}
+
+{% block title %}DriveX - Reviews{% endblock %}
+
+{% block profile_title %}Reviews{% endblock %}
+
+{% block content %}
+
+  
+    
+  
+  {% for review in reviews %}
+    <hr>
+      <div class="review-wrap ">
+        <div class="d-flex align-items-top">
+          <span class="d-inline-block flex-shrink-0 overflow-hidden rounded-circle me-2" style="width: 30px; height: 30px">
+            <img class="object-fit-cover" src="{{ review.user.profile.photo.url }}" width="100%" height="100%" />
+          </span>
+          <div>
+            <span class="fw-bolder">{{ review.user }}</span> <span class="fst-italic fw-light"> rated </span><a href="{{ review.car.url }}" class="link-dark">{{ review.car }}</a>   {{ review.rate }} <i class="icon-star text-warning"></i>: <br> {{ review.text }}
+          </div>
+        </div>
+        <div class="fst-italic fw-light text-end" style="font-size: .8em">{{ review.created|timesince }} ago</div>
+        
+      </div>
+  {% empty %}
+  <p>You have no review writen yet... <a href="{% url 'drivex:car-list' %}" class="link-dark">Choose a Car for review</a></p>
+  {% endfor %}
+    
+
+{% endblock %}

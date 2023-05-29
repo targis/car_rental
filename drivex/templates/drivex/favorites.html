@@ -1,0 +1,20 @@
+{% extends 'drivex/profile_base.html' %}
+{% load static %}
+
+{% block title %}DriveX - Favorites{% endblock %}
+
+{% block profile_title %}Favorite Cars{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+  {% for car in favorite_cars %}
+    {% include 'drivex/parts/car_card.html' with car=car col='col-md-4' %}
+  {% empty %}
+  <p>You have not added any car to your favorites. <a href="{% url 'drivex:car-list' %}" class="link-primary">Go to cars</a></p>
+  {% endfor %}
+  </div>
+
+    
+
+{% endblock %}

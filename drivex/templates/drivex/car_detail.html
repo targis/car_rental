@@ -1,0 +1,225 @@
+{% extends 'drivex/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}DriveX - Cars{% endblock %}
+
+{% block main %}
+
+<section class="bg-white rounded mb-3 p-3">
+
+  <div class="row justify-content-between">
+    <div class="col-auto">
+      <h3 class="">{{car.brand}} {{ car.name }}</h3>
+    </div>
+    <div class="col-auto">
+      <img src="{{ car.brand.logo.url }}"
+                class="object-fit-contain" alt="{{ car.brand }}" width="100" height="50">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <img src="{% if car.image %}{{ car.image.url }}
+                {% else %}{% static 'drivex/img/car.png' %}{% endif %}"
+                class="object-fit-contain mb-3 ms-auto me-auto" alt="{{ car.name }}" height="160">
+
+        <div class="row text-secondary text-center mb-2">
+            <div class="col-2 p-0 d-flex flex-column ml-auto"><i class="icon-people"></i><span style="font-size: 0.625em">{{ car.passengers }}</span></div>
+            <div class="col-2 p-0 d-flex flex-column"><i class="icon-door"></i><span style="font-size: 0.625em">{{ car.doors }}</span></div>
+            <div class="col-2 p-0 d-flex flex-column"><i class="icon-suitcase"></i><span style="font-size: 0.625em">{{ car.boot_space }} L</span></div>
+            <div class="col-3 p-0 d-flex flex-column"><i class="icon-canister"></i><span style="font-size: 0.625em">{{ car.consumption }} L/100km</span></div>
+        </div>
+
+    </div>
+    <div class="col-md-8">
+
+      <table class="table mb-5">
+        <tr>
+          <td>
+          {% if car.power == "EL" %}
+            Battery
+          {% else %}
+            Engine
+          {% endif %}
+              capacity</td>
+          <td>{{ car.capacity }} 
+            {% if car.power == "EL" %}
+            kWh
+            {% else %}
+            L
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>Transmission type</td>
+          <td>{{ car.get_transmission_display }}</td>
+        </tr>
+        <tr>
+          <td>Fuel type</td>
+          <td>{{ car.get_power_display }}</td>
+        </tr>
+      </table>
+    
+      {% if car.features.exists %}
+        <div class="text-secondary ms-2">
+          <span class="text-dark">Features: </span>
+        {% for feature in car.features.all %}          
+          {{ feature }}{% if not forloop.last %},{% else %}{% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <hr>
+  <div class="row justify-content-between">
+    <div class="col-auto">
+      {% if car.num_reviews %}
+
+        {% with car.rating as rt %}
+        <span class="text-warning">
+          <i class="icon-star{% if rt > 0 and rt < 1 %}-half{% elif rt < 1 %}-outline {% endif %}" aria-hidden="true"></i>
+          <i class="icon-star{% if rt > 1 and rt < 2 %}-half{% elif rt < 2 %}-outline {% endif %}" aria-hidden="true"></i>
+          <i class="icon-star{% if rt > 2 and rt < 3 %}-half{% elif rt < 3 %}-outline {% endif %}" aria-hidden="true"></i>
+          <i class="icon-star{% if rt > 3 and rt < 4 %}-half{% elif rt < 4 %}-outline {% endif %}" aria-hidden="true"></i>
+          <i class="icon-star{% if rt > 4 and rt < 5 %}-half{% elif rt < 5 %}-outline {% endif %}" aria-hidden="true"></i>
+        </span>
+        {{ rt|floatformat:1 }}
+        {% endwith %}
+        ({{ car.num_reviews }} review{{ car.num_reviews|pluralize }})
+      {% endif %}
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'drivex:toggle-favorite' car_pk=car.id %}" class="btn btn-outline-primary ps-5 pe-5">
+        {% if car in user.favorites.all %}
+          Remove from
+        {% else %}
+          Add to
+        {% endif %} favorites
+      </a>
+      <a class="btn btn-primary ps-5 pe-5">Book a car</a>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6">
+    {% include 'drivex/parts/messages.html' %}
+      <h5>Reviews</h5>
+      {% if user.is_authenticated %}
+        
+        {% if not user_rating %}
+        <form class="review-form" action="{% url 'drivex:add-review' car_pk=car.id %}" method="post">
+          {% csrf_token %}
+          <fieldset class="star-rating">
+          <legend class="fs-6">Your rating*</legend>
+            <div class="mb-3">
+              <input type="radio" name="rate" value="1" id="rating1" />
+              <label for="rating1"><span>1</span></label>
+              <input type="radio" name="rate" value="2" id="rating2" />
+              <label for="rating2"><span>2</span></label>
+              <input type="radio" name="rate" value="3" id="rating3" />
+              <label for="rating3"><span>3</span></label>
+              <input type="radio" name="rate" value="4" id="rating4" />
+              <label for="rating4"><span>4</span></label>
+              <input type="radio" name="rate" value="5" id="rating5" />
+              <label for="rating5"><span>5</span></label>
+            </div>
+          </fieldset>
+          {{ review_form|crispy }}
+          <button type="submit" class="btn btn-outline-info">Add Review</button>
+        </form>
+        {% endif %}
+        
+      {% else %}
+      <p>You have to log in to leave a review.</p>
+      {% endif %}
+
+        {% for review in reviews %}
+          <hr>
+          <div class="review-wrap position-relative">
+            <div class="d-flex align-items-top">
+              <span class="d-inline-block flex-shrink-0 overflow-hidden rounded-circle me-2" style="width: 30px; height: 30px">
+                <img class="object-fit-cover" src="{{ review.user.profile.photo.url }}" width="100%" height="100%" />
+              </span>
+              <div>
+                <span class="fw-bolder">{{ review.user }}</span> <span class="fst-italic fw-light">rated</span> {{ review.rate }} <i class="icon-star text-warning"></i>: <br> {{ review.text }}
+              </div>
+            </div>
+            <div class="fst-italic fw-light text-end" style="font-size: .8em">{{ review.created|timesince }} ago</div>
+            {% if review.user == user %}
+              <button type="button" class="btn btn-sm btn-outline-secondary edit-btn" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                Edit <i class="icon-edit"></i>
+              </button>
+            {% endif %}
+            
+          </div>
+
+        {% empty %}
+        <p>Your review can be the first.</p>
+        {% endfor %}
+
+    </div>
+  </div>
+  
+    
+</section>
+
+
+{% comment %} <section class="bg-white rounded p-3">
+  <p>More cars by {{ car.brand }}:
+    {% for c in car.brand.cars.all %}
+      <a class="link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="{{ c.url }}">{{ c|capfirst }}</a>{% if not forloop.last %},{% else %}{% endif %}
+    {% endfor %}
+  </p>
+</section> {% endcomment %}
+
+
+<!-- Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'drivex:update-review' car_pk=car.id %}">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="reviewModalLabel">Editing review for {{ car }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <fieldset class="star-rating">
+          <legend class="fs-6">Your rating*</legend>
+            <div class="mb-3">
+              <input type="radio" name="rate" value="1" id="rating1" 
+              {% if user_rating == 1 %}
+                checked
+              {% endif %}
+                 />
+              <label for="rating1"><span>1</span></label>
+              <input type="radio" name="rate" value="2" id="rating2" {% if user_rating == 2 %}
+                checked
+              {% endif %} />
+              <label for="rating2"><span>2</span></label>
+              <input type="radio" name="rate" value="3" id="rating3" {% if user_rating == 3 %}
+                checked
+              {% endif %} />
+              <label for="rating3"><span>3</span></label>
+              <input type="radio" name="rate" value="4" id="rating4" {% if user_rating == 4 %}
+                checked
+              {% endif %} />
+              <label for="rating4"><span>4</span></label>
+              <input type="radio" name="rate" value="5" id="rating5" {% if user_rating == 5 %}
+                checked
+              {% endif %} />
+              <label for="rating5"><span>5</span></label>
+            </div>
+          </fieldset>
+          {{ review_form|crispy }}
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-info">Save</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

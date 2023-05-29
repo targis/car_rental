@@ -1,0 +1,25 @@
+{% extends 'drivex/base.html' %}
+{% load crispy_forms_tags %}   
+
+{% block main %} 
+{% include 'drivex/parts/messages.html' %}
+<!--Register--> 
+<div class="container py-5">
+  <div class="row">
+    <div class="col-sm-4 mx-auto">
+      <h1>Register</h1>
+      <form class="form mb-5" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ user_form|crispy }}   
+        {{ profile_form|crispy }}   
+        <div class="text-center">
+          <button class="btn btn-primary" type="submit">Register</button>
+        </div>                     
+      </form>
+      <p class="text-center">If you already have an account, <a href="{% url 'drivex:user-login' %}">login</a> instead.</p>
+    </div>
+  </div>
+	
+</div>
+
+{% endblock %}

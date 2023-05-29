@@ -1,0 +1,105 @@
+{% extends 'drivex/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}DriveX - Cars{% endblock %}
+{% block main %}
+
+
+<div class="d-flex justify-content-between mb-3">
+<h3>All Cars</h3>
+
+{% with request.resolver_match.url_name as url_name %}
+  <div>
+  <span class="me-3">Sort: </span>
+    <a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover me-3" href="?page={{ page_obj.number }}{% if page_obj.filter_query_string %}&{{ page_obj.filter_query_string }}{% endif %}&order_by=price">Cheaper first</a>
+    <a class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="?page={{ page_obj.number }}{% if page_obj.filter_query_string %}&{{ page_obj.filter_query_string }}{% endif %}&order_by=-price">Expensive first</a>
+  </div>
+{% endwith %}
+
+</div>
+
+<div class="row">
+  <aside class="col-md-3">
+    <h5 class="mb-3">Filter</h5>
+    <form class="form" action="#" method="get">
+      {{ filter_set.form|crispy }}
+      <div class="d-flex mt-4">
+        <input class="btn btn-primary flex-fill me-2" type="submit" value="Submit">
+        <a href="{% url 'drivex:car-list' %}" class="btn btn-outline-secondary flex-fill">Clear</a>
+      </div>
+    </form>
+  </aside>
+
+  <section class="col-md-9">
+  <div class="row">
+  {% for car in page_obj %}    
+    
+    {% include 'drivex/parts/car_card.html' with col='col-md-4' %}
+    
+  {% empty %}
+    <p>Nothing found</p>
+  {% endfor %}
+  </div>
+
+  {% comment %} {% include 'drivex/parts/pagination.html' with paginator_filter=paginator_filter %} {% endcomment %}
+
+{% if page_obj.has_other_pages %}
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if page_obj.filter_query_string %}&{{ page_obj.filter_query_string }}{% endif %}">
+                        First
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if page_obj.filter_query_string %}&{{ page_obj.filter_query_string }}{% endif %}">
+                        Previous
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page_number in page_obj.paginator.page_range %}
+                {% comment %}
+                    This conditional allows us to display up to 3 pages before and after the current page
+                    If you decide to remove this conditional, all the pages will be displayed
+
+                    You can change the 3 to any number you want e.g
+                    To display only 5 pagination items, change the 3 to 2 (2 before and 2 after the current page)
+                {% endcomment %}
+                {% if page_number <= page_obj.number|add:3 and page_number >= page_obj.number|add:-3 %}
+
+                        <li class="page-item{% if page_obj.number == page_number %} active{% endif %}">
+                            <a class="page-link" href="?page={{ page_number }}{% if page_obj.filter_query_string %}&{{ page_obj.filter_query_string }}{% endif %}">
+                                {{ page_number }}
+                            </a>
+                        </li>
+
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if page_obj.filter_query_string %}&{{ page_obj.filter_query_string }}{% endif %}">
+                        Next
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if page_obj.filter_query_string %}&{{ page_obj.filter_query_string }}{% endif %}">
+                        Last
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+
+
+
+
+
+
+  </section>
+</div>
+
+{% endblock %}

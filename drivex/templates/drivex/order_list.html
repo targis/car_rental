@@ -1,0 +1,62 @@
+{% extends 'drivex/profile_base.html' %}
+{% load static %}
+
+{% block title %}DriveX - Orders{% endblock %}
+
+{% block profile_title %}Orders{% endblock %}
+
+{% block content %}
+
+  {% if orders %}
+
+    <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Created</th>
+        <th scope="col">Car</th>
+        <th scope="col">From - To</th>
+        <th scope="col">Status</th>
+        <th scope="col">Order number</th>
+      </tr>
+    </thead>
+  
+    
+  
+  {% for order in orders %}
+    <tr>
+      <td scope="row">{{ order.created|date:'d.m.Y H:i' }}</td>
+      <td scope="row">{{ order.car }}</td>
+      <td scope="row">{{ order.date_start|date:'d.m.Y' }}-{{ order.date_end|date:'d.m.Y' }}</td>
+      <td scope="row">
+      <span class="badge 
+        {% if order.status == 'NW' %}
+          text-bg-success
+        {% endif %}
+
+        {% if order.status == 'AC' %}
+          text-bg-warning
+        {% endif %}
+
+        {% if order.status == 'CL' %}
+          text-bg-secondary
+        {% endif %}">
+
+      {{ order.get_status_display }}
+      </span>
+      
+
+
+      
+      </td>
+      <td scope="row">{{ order.number }}</td>
+    </tr>
+    
+  {% endfor %}
+    
+</table>
+
+  {% else %}
+    <p>You have no ordres yet... <a href="{% url 'drivex:car-list' %}" class="link-dark">Choose a Car</a></p>
+  {% endif %}
+
+{% endblock %}

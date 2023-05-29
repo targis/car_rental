@@ -1,0 +1,25 @@
+{% extends 'drivex/base.html' %}
+
+{% load crispy_forms_tags %}
+
+
+{% block main %}
+{% include 'drivex/parts/messages.html' %}
+<div class="row">
+  <div class="col-sm-4 mx-auto bg-white rounded p-3">
+    <h4 class="mb-4">Order {{car}}</h4>
+
+    
+
+    <form method="post" action="{% url 'drivex:new-order' pk=car.id %}">
+      {% csrf_token %}
+      {{ order_form|crispy }}
+      <button class="btn btn-primary" type="submit">Order</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+  
+
+
